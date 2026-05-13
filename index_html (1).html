@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Basics — CS Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1f2d45;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --accent5: #fbbf24;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --starter: #1e3a5f;
+    --starter-border: #3b82f6;
+    --starter-glow: rgba(59,130,246,0.2);
+    --core: #1a3329;
+    --core-border: #34d399;
+    --core-glow: rgba(52,211,153,0.2);
+    --challenge: #2d1b4e;
+    --challenge-border: #a78bfa;
+    --challenge-glow: rgba(167,139,250,0.2);
+    --extension: #3d2210;
+    --extension-border: #ff6b35;
+    --extension-glow: rgba(255,107,53,0.2);
+    --quiz: #2d2a10;
+    --quiz-border: #fbbf24;
+    --quiz-glow: rgba(251,191,36,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,229,255,0.05) 0%, transparent 100%);
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 2px;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0,229,255,0.05);
+  }
+
+  .header-badge::before { content: '◆'; font-size: 0.6em; }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  h1 .highlight {
+    color: var(--accent);
+    position: relative;
+  }
+
+  h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    box-shadow: 0 0 20px var(--accent);
+  }
+
+  .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+  }
+
+  /* ===== OBJECTIVES ===== */
+  .objectives {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .obj-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    border: 1px solid;
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .nav-bar::-webkit-scrollbar { height: 3px; }
+  .nav-bar::-webkit-scrollbar-track { background: var(--bg); }
+  .nav-bar::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  .nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+    background: var(--surface);
+  }
+
+  .nav-tab:hover {
+    color: var(--text);
+    background: var(--surface2);
+    border-color: rgba(0,229,255,0.3);
+    transform: translateY(-1px);
+  }
+
+  .nav-tab.active {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 14px rgba(0,229,255,0.35);
+  }
+
+  .tab-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .nav-tab.active .tab-dot {
+    background: var(--bg) !important;
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  .section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== SECTION HEADER ===== */
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+    padding: 1.75rem 2rem;
+    border-radius: 4px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background: radial-gradient(ellipse at top left, currentColor 0%, transparent 70%);
+  }
+
+  .section-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 12px currentColor);
+  }
+
+  .section-meta { flex: 1; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    opacity: 0.7;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ===== TASK CARDS ===== */
+  .tasks-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .task-card {
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .task-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .task-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .task-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    border: 1px solid;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  .task-title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+
+  .difficulty {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .task-body {
+    padding: 1.5rem;
+  }
+
+  .task-description {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+  }
+
+  /* ===== CODE BLOCKS ===== */
+  .code-block {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    background: #050810;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    position: relative;
+  }
+
+  .code-block::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0.5rem; right: 0.75rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .code-block .kw { color: #c792ea; }
+  .code-block .fn { color: #82aaff; }
+  .code-block .str { color: #c3e88d; }
+  .code-block .num { color: #f78c6c; }
+  .code-block .cm { color: #546e7a; font-style: italic; }
+  .code-block .var { color: #eeffff; }
+  .code-block .op { color: #89ddff; }
+  .code-block .builtin { color: #ffcb6b; }
+
+  /* ===== TASK STEPS ===== */
+  .steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin: 1rem 0;
+  }
+
+  .steps li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  .steps li::before {
+    content: attr(data-n);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    border: 1px solid;
+  }
+
+  /* ===== EXPECTED OUTPUT ===== */
+  .output-block {
+    background: #020408;
+    border: 1px solid #1a2a1a;
+    border-radius: 3px;
+    padding: 1rem 1.25rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent4);
+    line-height: 1.7;
+    position: relative;
+    margin-top: 1rem;
+  }
+
+  .output-block::before {
+    content: '▶ OUTPUT';
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  /* ===== HINT / TIP ===== */
+  .hint {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 3px;
+    padding: 0.9rem 1.1rem;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .hint-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ===== INLINE CODE ===== */
+  code {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8em;
+    background: rgba(0,229,255,0.08);
+    color: var(--accent);
+    padding: 0.1em 0.4em;
+    border-radius: 2px;
+    border: 1px solid rgba(0,229,255,0.15);
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz-q {
+    margin-bottom: 1.75rem;
+  }
+
+  .quiz-question {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .quiz-opt {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'Space Mono', monospace;
+    transition: all 0.15s;
+    background: var(--surface2);
+    color: var(--text-dim);
+  }
+
+  .quiz-opt:hover { border-color: var(--accent); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--accent4); background: rgba(52,211,153,0.1); color: var(--accent4); }
+  .quiz-opt.wrong { border-color: #ef4444; background: rgba(239,68,68,0.1); color: #ef4444; }
+
+  .quiz-letter {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    min-width: 14px;
+  }
+
+  .quiz-feedback {
+    display: none;
+    margin-top: 0.6rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-wrap {
+    margin-bottom: 2rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1rem 1.25rem;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* ===== SECTION COLORS ===== */
+  /* Starter */
+  #starter .section-header { border-color: var(--starter-border); color: #3b82f6; }
+  #starter .task-card:hover { border-color: var(--starter-border); }
+  #starter .task-num { border-color: #3b82f6; color: #3b82f6; }
+  #starter .steps li::before { border-color: #3b82f6; color: #3b82f6; }
+
+  /* Core */
+  #core .section-header { border-color: var(--core-border); color: var(--accent4); }
+  #core .task-card:hover { border-color: var(--core-border); }
+  #core .task-num { border-color: var(--accent4); color: var(--accent4); }
+  #core .steps li::before { border-color: var(--accent4); color: var(--accent4); }
+
+  /* Challenge */
+  #challenge .section-header { border-color: var(--challenge-border); color: var(--accent3); }
+  #challenge .task-card:hover { border-color: var(--challenge-border); }
+  #challenge .task-num { border-color: var(--accent3); color: var(--accent3); }
+  #challenge .steps li::before { border-color: var(--accent3); color: var(--accent3); }
+
+  /* Extension */
+  #extension .section-header { border-color: var(--extension-border); color: var(--accent2); }
+  #extension .task-card:hover { border-color: var(--extension-border); }
+  #extension .task-num { border-color: var(--accent2); color: var(--accent2); }
+  #extension .steps li::before { border-color: var(--accent2); color: var(--accent2); }
+
+  /* Quiz */
+  #quiz .section-header { border-color: var(--quiz-border); color: var(--accent5); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    header { padding: 2rem 1.25rem 1.5rem; }
+    main { padding: 1.5rem 1rem 4rem; }
+    .task-body { padding: 1.1rem; }
+    .section-header { padding: 1.25rem; }
+  }
+
+  /* ===== COPY BUTTON ===== */
+  .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 3.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ===== FILL-IN BLANK ===== */
+  .fill-blank {
+    display: inline-block;
+    background: rgba(0,229,255,0.08);
+    border-bottom: 2px solid var(--accent);
+    min-width: 80px;
+    padding: 0 0.3em;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78em;
+    color: var(--accent);
+    outline: none;
+    transition: background 0.2s;
+  }
+
+  .fill-blank:focus {
+    background: rgba(0,229,255,0.15);
+  }
+
+  .check-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+    background: rgba(0,229,255,0.06);
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .check-btn:hover { background: rgba(0,229,255,0.15); }
+
+  .inline-result {
+    display: none;
+    margin-top: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-badge">Computer Science · Year 12 L13 · Lesson 1</div>
+  <h1>Python <span class="highlight">Basics</span></h1>
+  <p class="subtitle">// Variables · Data Types · Input/Output · Operators</p>
+  <div class="objectives">
+    <span class="obj-pill" style="border-color:#3b82f6;color:#3b82f6;">🎯 Declare variables</span>
+    <span class="obj-pill" style="border-color:#34d399;color:#34d399;">🎯 Use print() & input()</span>
+    <span class="obj-pill" style="border-color:#a78bfa;color:#a78bfa;">🎯 Perform calculations</span>
+    <span class="obj-pill" style="border-color:#ff6b35;color:#ff6b35;">🎯 String manipulation</span>
+    <span class="obj-pill" style="border-color:#fbbf24;color:#fbbf24;">🎯 Understand data types</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-bar" id="navBar">
+  <button class="nav-tab active" data-section="starter" onclick="showSection('starter')">
+    <span class="tab-dot" style="background:#3b82f6"></span>🚀 Starter
+  </button>
+  <button class="nav-tab" data-section="core" onclick="showSection('core')">
+    <span class="tab-dot" style="background:#34d399"></span>📘 Core Tasks
+  </button>
+  <button class="nav-tab" data-section="challenge" onclick="showSection('challenge')">
+    <span class="tab-dot" style="background:#a78bfa"></span>⚡ Challenge
+  </button>
+  <button class="nav-tab" data-section="extension" onclick="showSection('extension')">
+    <span class="tab-dot" style="background:#ff6b35"></span>🔥 Extension
+  </button>
+  <button class="nav-tab" data-section="quiz" onclick="showSection('quiz')">
+    <span class="tab-dot" style="background:#fbbf24"></span>📝 Exit Quiz
+  </button>
+</nav>
+
+<main>
+
+<!-- ============================
+     STARTER SECTION
+============================= -->
+<section id="starter" class="section active">
+
+  <div class="section-header" style="background:rgba(59,130,246,0.04)">
+    <div class="section-icon" style="color:#3b82f6">🚀</div>
+    <div class="section-meta">
+      <div class="section-label" style="color:#3b82f6">Differentiated — Starter Level</div>
+      <div class="section-title">Getting Started with Python</div>
+      <div class="section-desc">Guided tasks with scaffolding and worked examples. Ideal if you are new to Python or need a refresher. Complete as many as you can in 10 minutes.</div>
+    </div>
+  </div>
+
+  <div class="tasks-grid">
+
+    <!-- Task S1 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(59,130,246,0.2)">
+        <span class="task-num" style="border-color:#3b82f6;color:#3b82f6">S1</span>
+        <span class="task-title">Your First Print Statement</span>
+        <span class="difficulty" style="color:#3b82f6">⬛ Easy</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">In Python, <code>print()</code> is used to display text on screen. The text must be wrapped in quotation marks inside the brackets.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="cm"># This is a comment — Python ignores it</span>
+<span class="fn">print</span>(<span class="str">"Hello, World!"</span>)
+        </div>
+
+        <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:0.75rem">👆 The example above prints a greeting. Now try it yourself:</p>
+
+        <ul class="steps">
+          <li data-n="1">Type the code above into your Python editor (IDLE or Thonny).</li>
+          <li data-n="2">Run it with <code>F5</code> or the Run button.</li>
+          <li data-n="3">Change the message to <code>"Hello, [your name]!"</code> and run again.</li>
+          <li data-n="4">Add a second <code>print()</code> line that shows your school name.</li>
+        </ul>
+
+        <div class="output-block">Hello, Alex!
+Greenfield Academy</div>
+      </div>
+    </div>
+
+    <!-- Task S2 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(59,130,246,0.2)">
+        <span class="task-num" style="border-color:#3b82f6;color:#3b82f6">S2</span>
+        <span class="task-title">Storing Values in Variables</span>
+        <span class="difficulty" style="color:#3b82f6">⬛ Easy</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">A <strong>variable</strong> is a labelled container that stores data. Use <code>=</code> to assign a value. Variable names should be lowercase with underscores.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="var">name</span> <span class="op">=</span> <span class="str">"Sofia"</span>       <span class="cm"># string</span>
+<span class="var">age</span>  <span class="op">=</span> <span class="num">14</span>           <span class="cm"># integer</span>
+<span class="var">height</span> <span class="op">=</span> <span class="num">1.62</span>      <span class="cm"># float</span>
+
+<span class="fn">print</span>(<span class="str">"Name:"</span>, <span class="var">name</span>)
+<span class="fn">print</span>(<span class="str">"Age:"</span>, <span class="var">age</span>)
+        </div>
+
+        <ul class="steps">
+          <li data-n="1">Create three variables: <code>name</code>, <code>age</code>, and <code>favourite_colour</code>.</li>
+          <li data-n="2">Assign appropriate values to each.</li>
+          <li data-n="3">Print a sentence using all three variables.</li>
+        </ul>
+
+        <div class="hint">
+          <span class="hint-icon">💡</span>
+          <span>You can combine variables and text in print by separating them with commas: <code>print("I am", age, "years old")</code></span>
+        </div>
+
+        <div class="output-block">My name is Sofia, I am 14 and my favourite colour is blue.</div>
+      </div>
+    </div>
+
+    <!-- Task S3 — Fill in the blank -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(59,130,246,0.2)">
+        <span class="task-num" style="border-color:#3b82f6;color:#3b82f6">S3</span>
+        <span class="task-title">Fill in the Blanks</span>
+        <span class="difficulty" style="color:#3b82f6">⬛ Easy</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Complete the code below by filling in the missing keywords. Type your answers in the boxes, then click Check.</p>
+
+        <div class="code-block" data-lang="python" id="fillCode" style="line-height:2.2">
+<span class="var">score</span> <span class="op">=</span> <input class="fill-blank" id="fb1" placeholder="___" style="width:45px" autocomplete="off"> <span class="cm"># assign the number 10 to score</span>
+<span class="var">player</span> <span class="op">=</span> <input class="fill-blank" id="fb2" placeholder="___________" style="width:120px" autocomplete="off"> <span class="cm"># assign string "Player One"</span>
+<input class="fill-blank" id="fb3" placeholder="_____" style="width:55px" autocomplete="off">(<span class="str">"Score:"</span>, <span class="var">score</span>)
+        </div>
+
+        <button class="check-btn" onclick="checkFillBlanks()">✓ Check Answers</button>
+        <div class="inline-result" id="fillResult"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================
+     CORE TASKS SECTION
+============================= -->
+<section id="core" class="section">
+
+  <div class="section-header" style="background:rgba(52,211,153,0.04)">
+    <div class="section-icon" style="color:#34d399">📘</div>
+    <div class="section-meta">
+      <div class="section-label" style="color:#34d399">Main Learning — Core Tasks</div>
+      <div class="section-title">Input, Output &amp; Calculations</div>
+      <div class="section-desc">Complete all core tasks. These cover the key skills for today's lesson. Use help cards if needed.</div>
+    </div>
+  </div>
+
+  <div class="tasks-grid">
+
+    <!-- Task C1 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(52,211,153,0.2)">
+        <span class="task-num" style="border-color:#34d399;color:#34d399">C1</span>
+        <span class="task-title">User Input — Personal Profile</span>
+        <span class="difficulty" style="color:#34d399">⬛⬛ Medium</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description"><code>input()</code> pauses the program and waits for the user to type something. It always returns a <strong>string</strong>. The message inside the brackets is shown as a prompt.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="var">name</span> <span class="op">=</span> <span class="builtin">input</span>(<span class="str">"What is your name? "</span>)
+<span class="var">age</span>  <span class="op">=</span> <span class="builtin">input</span>(<span class="str">"How old are you? "</span>)
+<span class="fn">print</span>(<span class="str">"Hello"</span>, <span class="var">name</span>, <span class="str">"- you are"</span>, <span class="var">age</span>, <span class="str">"years old."</span>)
+        </div>
+
+        <ul class="steps">
+          <li data-n="1">Write a program that asks for: first name, last name, age, and favourite subject.</li>
+          <li data-n="2">Store each answer in an appropriately named variable.</li>
+          <li data-n="3">Print a full sentence using all four variables.</li>
+          <li data-n="4">Use <code>f-strings</code> for your print statement: <code>f"Hello {name}!"</code></li>
+        </ul>
+
+        <div class="output-block">What is your first name? Jordan
+What is your last name? Smith
+How old are you? 15
+Favourite subject? Computer Science
+
+Hello Jordan Smith! You are 15 years old and love Computer Science.</div>
+
+        <div class="hint">
+          <span class="hint-icon">💡</span>
+          <span>An f-string starts with <code>f</code> before the quote: <code>f"Hello {name}, you are {age}!"</code> — variable names go inside curly braces.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task C2 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(52,211,153,0.2)">
+        <span class="task-num" style="border-color:#34d399;color:#34d399">C2</span>
+        <span class="task-title">Arithmetic &amp; Type Casting</span>
+        <span class="difficulty" style="color:#34d399">⬛⬛ Medium</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Python can do maths! But <code>input()</code> gives you a string, not a number. You must <strong>cast</strong> (convert) it using <code>int()</code> or <code>float()</code> before calculating.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="cm"># Python arithmetic operators:</span>
+<span class="cm"># +  addition      -  subtraction</span>
+<span class="cm"># *  multiplication  /  division</span>
+<span class="cm"># // floor division  %  modulo  ** power</span>
+
+<span class="var">num1</span> <span class="op">=</span> <span class="builtin">int</span>(<span class="builtin">input</span>(<span class="str">"Enter first number: "</span>))
+<span class="var">num2</span> <span class="op">=</span> <span class="builtin">int</span>(<span class="builtin">input</span>(<span class="str">"Enter second number: "</span>))
+<span class="fn">print</span>(<span class="str">"Sum:"</span>, <span class="var">num1</span> <span class="op">+</span> <span class="var">num2</span>)
+<span class="fn">print</span>(<span class="str">"Product:"</span>, <span class="var">num1</span> <span class="op">*</span> <span class="var">num2</span>)
+        </div>
+
+        <ul class="steps">
+          <li data-n="1">Ask the user for two whole numbers.</li>
+          <li data-n="2">Display the result of all six operations: <code>+  -  *  /  //  %</code></li>
+          <li data-n="3">Label each result clearly in the output.</li>
+          <li data-n="4"><strong>Extend:</strong> Ask for a third number and calculate the <strong>average</strong> of all three.</li>
+        </ul>
+
+        <div class="output-block">Enter first number: 17
+Enter second number: 5
+
+Addition:        22
+Subtraction:     12
+Multiplication:  85
+Division:        3.4
+Floor Division:  3
+Modulo:          2</div>
+      </div>
+    </div>
+
+    <!-- Task C3 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(52,211,153,0.2)">
+        <span class="task-num" style="border-color:#34d399;color:#34d399">C3</span>
+        <span class="task-title">Data Types Detective</span>
+        <span class="difficulty" style="color:#34d399">⬛⬛ Medium</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Python has several data types. Use <code>type()</code> to find out what type a value is. Understanding types prevents common errors.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="cm"># The four main types you'll use today:</span>
+<span class="var">a</span> <span class="op">=</span> <span class="num">42</span>          <span class="cm"># int   — whole number</span>
+<span class="var">b</span> <span class="op">=</span> <span class="num">3.14</span>        <span class="cm"># float — decimal number</span>
+<span class="var">c</span> <span class="op">=</span> <span class="str">"Python"</span>   <span class="cm"># str   — text</span>
+<span class="var">d</span> <span class="op">=</span> <span class="kw">True</span>        <span class="cm"># bool  — True or False</span>
+
+<span class="fn">print</span>(<span class="builtin">type</span>(<span class="var">a</span>))  <span class="cm"># &lt;class 'int'&gt;</span>
+        </div>
+
+        <ul class="steps">
+          <li data-n="1">Create one variable of each type: <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>.</li>
+          <li data-n="2">Print each variable and its type using <code>type()</code>.</li>
+          <li data-n="3">Try adding a string to an integer — what error do you get? Write it down.</li>
+          <li data-n="4">Fix the error using <code>str()</code> conversion.</li>
+        </ul>
+
+        <div class="hint">
+          <span class="hint-icon">⚠️</span>
+          <span>You cannot do <code>"Age: " + 15</code> — you must write <code>"Age: " + str(15)</code>. This is called <em>concatenation</em>.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================
+     CHALLENGE SECTION
+============================= -->
+<section id="challenge" class="section">
+
+  <div class="section-header" style="background:rgba(167,139,250,0.04)">
+    <div class="section-icon" style="color:#a78bfa">⚡</div>
+    <div class="section-meta">
+      <div class="section-label" style="color:#a78bfa">Stretch &amp; Deepen — Challenge</div>
+      <div class="section-title">Apply Your Knowledge</div>
+      <div class="section-desc">These tasks require more independent thinking. Less scaffolding — use what you've learned. Tackle at least one.</div>
+    </div>
+  </div>
+
+  <div class="tasks-grid">
+
+    <!-- Task CH1 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(167,139,250,0.2)">
+        <span class="task-num" style="border-color:#a78bfa;color:#a78bfa">CH1</span>
+        <span class="task-title">BMI Calculator</span>
+        <span class="difficulty" style="color:#a78bfa">⬛⬛⬛ Hard</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Build a Body Mass Index calculator. BMI = weight (kg) ÷ height² (m). You will need to handle float inputs, perform arithmetic, and round the result.</p>
+
+        <ul class="steps">
+          <li data-n="1">Ask the user for their <strong>weight in kg</strong> (float) and <strong>height in metres</strong> (float).</li>
+          <li data-n="2">Calculate BMI using the formula: <code>bmi = weight / (height ** 2)</code></li>
+          <li data-n="3">Round the result to 2 decimal places using <code>round(bmi, 2)</code>.</li>
+          <li data-n="4">Display the result in a formatted sentence.</li>
+          <li data-n="5"><strong>Bonus:</strong> Display the BMI category (Underweight / Normal / Overweight / Obese) using <code>if/elif/else</code>.</li>
+        </ul>
+
+        <div class="output-block">Enter your weight (kg): 68.5
+Enter your height (m): 1.75
+
+Your BMI is 22.37
+Category: Normal weight</div>
+
+        <div class="hint">
+          <span class="hint-icon">💡</span>
+          <span>BMI ranges: &lt;18.5 = Underweight · 18.5–24.9 = Normal · 25–29.9 = Overweight · 30+ = Obese</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task CH2 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(167,139,250,0.2)">
+        <span class="task-num" style="border-color:#a78bfa;color:#a78bfa">CH2</span>
+        <span class="task-title">Receipt Generator</span>
+        <span class="difficulty" style="color:#a78bfa">⬛⬛⬛ Hard</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Create a simple shop receipt program. The user enters item names and prices, and your program produces a formatted receipt with a total.</p>
+
+        <ul class="steps">
+          <li data-n="1">Ask for the names and prices of <strong>3 items</strong>.</li>
+          <li data-n="2">Calculate the <strong>subtotal</strong>, apply <strong>20% VAT</strong>, and calculate the <strong>total</strong>.</li>
+          <li data-n="3">Print a formatted receipt — use string formatting to align the columns neatly.</li>
+          <li data-n="4">Use <code>f"{'Item':<20}{'Price':>8}"</code> style formatting for alignment.</li>
+        </ul>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="cm"># Hint: f-string alignment</span>
+<span class="fn">print</span>(<span class="str">f"{'Item':<20}{'Price':>8}"</span>)
+<span class="fn">print</span>(<span class="str">"-"</span> <span class="op">*</span> <span class="num">28</span>)
+<span class="fn">print</span>(<span class="str">f"{'Notebook':<20}{'£2.99':>8}"</span>)
+        </div>
+
+        <div class="output-block">============================
+        RECEIPT
+============================
+Notebook             £2.99
+Pencil case          £4.50
+USB stick           £12.99
+----------------------------
+Subtotal            £20.48
+VAT (20%)            £4.10
+----------------------------
+TOTAL               £24.58
+============================</div>
+      </div>
+    </div>
+
+    <!-- Task CH3 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(167,139,250,0.2)">
+        <span class="task-num" style="border-color:#a78bfa;color:#a78bfa">CH3</span>
+        <span class="task-title">String Methods Exploration</span>
+        <span class="difficulty" style="color:#a78bfa">⬛⬛⬛ Hard</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Strings have built-in <strong>methods</strong> — functions that belong to the string object. Explore the most useful ones by completing the tasks below.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="var">s</span> <span class="op">=</span> <span class="str">"  Hello, Python World!  "</span>
+
+<span class="fn">print</span>(<span class="var">s</span>.<span class="fn">strip</span>())       <span class="cm"># remove whitespace</span>
+<span class="fn">print</span>(<span class="var">s</span>.<span class="fn">upper</span>())       <span class="cm"># all caps</span>
+<span class="fn">print</span>(<span class="var">s</span>.<span class="fn">lower</span>())       <span class="cm"># all lowercase</span>
+<span class="fn">print</span>(<span class="var">s</span>.<span class="fn">replace</span>(<span class="str">"Python"</span>, <span class="str">"the"</span>))
+<span class="fn">print</span>(<span class="var">s</span>.<span class="fn">count</span>(<span class="str">"l"</span>))    <span class="cm"># count occurrences</span>
+<span class="fn">print</span>(<span class="builtin">len</span>(<span class="var">s</span>))          <span class="cm"># length</span>
+        </div>
+
+        <ul class="steps">
+          <li data-n="1">Ask the user for a sentence and store it in <code>text</code>.</li>
+          <li data-n="2">Print the sentence in UPPER CASE and lower case.</li>
+          <li data-n="3">Print how many characters it contains (including spaces).</li>
+          <li data-n="4">Count how many times the letter "e" appears.</li>
+          <li data-n="5">Reverse the string using slicing: <code>text[::-1]</code></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================
+     EXTENSION SECTION
+============================= -->
+<section id="extension" class="section">
+
+  <div class="section-header" style="background:rgba(255,107,53,0.04)">
+    <div class="section-icon" style="color:#ff6b35">🔥</div>
+    <div class="section-meta">
+      <div class="section-label" style="color:#ff6b35">Mastery — Extension Tasks</div>
+      <div class="section-title">Beyond the Lesson</div>
+      <div class="section-desc">Designed for those who want to push further. These blend Python basics with real-world mini-projects. No step-by-step guidance — you're on your own!</div>
+    </div>
+  </div>
+
+  <div class="tasks-grid">
+
+    <!-- Task E1 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(255,107,53,0.2)">
+        <span class="task-num" style="border-color:#ff6b35;color:#ff6b35">E1</span>
+        <span class="task-title">Mad Libs Story Generator</span>
+        <span class="difficulty" style="color:#ff6b35">⬛⬛⬛⬛ Expert</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Create a Mad Libs game. The program asks the user for various words (noun, verb, adjective, place name…) then inserts them into a story template using f-strings. Make the story funny and at least 6 sentences long.</p>
+
+        <div class="hint">
+          <span class="hint-icon">🎯</span>
+          <span>Ask for at least 8 different word types. Print the complete story at the end. Try using <code>.capitalize()</code> on the first word of each sentence.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task E2 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(255,107,53,0.2)">
+        <span class="task-num" style="border-color:#ff6b35;color:#ff6b35">E2</span>
+        <span class="task-title">Unit Converter</span>
+        <span class="difficulty" style="color:#ff6b35">⬛⬛⬛⬛ Expert</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Build a multi-unit converter that handles three conversion types. The program should display a menu, take the user's choice, ask for a value, and print the converted result.</p>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="cm"># Conversion reference</span>
+<span class="cm"># 1 mile  = 1.60934 km</span>
+<span class="cm"># °C to °F: (C × 9/5) + 32</span>
+<span class="cm"># 1 kg   = 2.20462 lbs</span>
+        </div>
+
+        <ul class="steps">
+          <li data-n="1">Print a menu: 1) Miles→km  2) °C→°F  3) kg→lbs</li>
+          <li data-n="2">Ask user to choose an option.</li>
+          <li data-n="3">Ask for the value to convert.</li>
+          <li data-n="4">Perform the correct conversion and display result (2 d.p.).</li>
+          <li data-n="5"><strong>Extension:</strong> Add reverse conversions (km→miles, °F→°C, etc).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Task E3 -->
+    <div class="task-card">
+      <div class="task-header" style="border-bottom-color:rgba(255,107,53,0.2)">
+        <span class="task-num" style="border-color:#ff6b35;color:#ff6b35">E3</span>
+        <span class="task-title">Password Strength Checker</span>
+        <span class="difficulty" style="color:#ff6b35">⬛⬛⬛⬛ Expert</span>
+      </div>
+      <div class="task-body">
+        <p class="task-description">Write a program that analyses a password entered by the user and gives it a strength rating. Use string methods and Boolean logic.</p>
+
+        <ul class="steps">
+          <li data-n="1">Ask the user to enter a password.</li>
+          <li data-n="2">Check: length ≥ 8, contains a digit, contains uppercase, contains a special character.</li>
+          <li data-n="3">Award 1 point for each condition met (max 4).</li>
+          <li data-n="4">Print the score and a label: Weak / Fair / Strong / Very Strong.</li>
+        </ul>
+
+        <div class="code-block" data-lang="python">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="cm"># Useful methods for this task:</span>
+<span class="var">pw</span>.<span class="fn">isdigit</span>()      <span class="cm"># True if all chars are digits</span>
+<span class="builtin">any</span>(<span class="var">c</span>.<span class="fn">isdigit</span>() <span class="kw">for</span> <span class="var">c</span> <span class="kw">in</span> <span class="var">pw</span>)  <span class="cm"># has a digit?</span>
+<span class="builtin">any</span>(<span class="var">c</span>.<span class="fn">isupper</span>() <span class="kw">for</span> <span class="var">c</span> <span class="kw">in</span> <span class="var">pw</span>)  <span class="cm"># has uppercase?</span>
+        </div>
+
+        <div class="output-block">Enter password: Py7h0n!2025
+
+✓ Length OK (≥8)
+✓ Contains digit
+✓ Contains uppercase
+✓ Contains special character
+
+Score: 4/4 — Very Strong 🔒</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================
+     EXIT QUIZ SECTION
+============================= -->
+<section id="quiz" class="section">
+
+  <div class="section-header" style="background:rgba(251,191,36,0.04)">
+    <div class="section-icon" style="color:#fbbf24">📝</div>
+    <div class="section-meta">
+      <div class="section-label" style="color:#fbbf24">Assessment — Exit Quiz</div>
+      <div class="section-title">Check Your Understanding</div>
+      <div class="section-desc">Answer all 7 questions before you leave. Click an option to answer — you'll see instant feedback. This helps your teacher track progress.</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Quiz Progress</span>
+      <span id="quizCount">0 / 7 answered</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="quizProgress" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="tasks-grid" id="quizContainer">
+
+    <!-- Q1 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q1</span>
+        <span class="task-title">What does <code>print("Hello")</code> do?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q1">
+          <div class="quiz-opt" onclick="answer('q1',this,false)"><span class="quiz-letter">A</span>Stores "Hello" in memory</div>
+          <div class="quiz-opt" onclick="answer('q1',this,true)"><span class="quiz-letter">B</span>Displays "Hello" on screen</div>
+          <div class="quiz-opt" onclick="answer('q1',this,false)"><span class="quiz-letter">C</span>Asks the user to type "Hello"</div>
+          <div class="quiz-opt" onclick="answer('q1',this,false)"><span class="quiz-letter">D</span>Creates a variable called Hello</div>
+        </div>
+        <div class="quiz-feedback" id="q1-fb"></div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q2</span>
+        <span class="task-title">What is the data type of <code>score = 95</code>?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q2">
+          <div class="quiz-opt" onclick="answer('q2',this,false)"><span class="quiz-letter">A</span>float</div>
+          <div class="quiz-opt" onclick="answer('q2',this,false)"><span class="quiz-letter">B</span>string</div>
+          <div class="quiz-opt" onclick="answer('q2',this,true)"><span class="quiz-letter">C</span>int</div>
+          <div class="quiz-opt" onclick="answer('q2',this,false)"><span class="quiz-letter">D</span>bool</div>
+        </div>
+        <div class="quiz-feedback" id="q2-fb"></div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q3</span>
+        <span class="task-title">What does <code>input()</code> always return?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q3">
+          <div class="quiz-opt" onclick="answer('q3',this,false)"><span class="quiz-letter">A</span>An integer</div>
+          <div class="quiz-opt" onclick="answer('q3',this,true)"><span class="quiz-letter">B</span>A string</div>
+          <div class="quiz-opt" onclick="answer('q3',this,false)"><span class="quiz-letter">C</span>A float</div>
+          <div class="quiz-opt" onclick="answer('q3',this,false)"><span class="quiz-letter">D</span>A boolean</div>
+        </div>
+        <div class="quiz-feedback" id="q3-fb"></div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q4</span>
+        <span class="task-title">What is the result of <code>17 % 5</code>?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q4">
+          <div class="quiz-opt" onclick="answer('q4',this,false)"><span class="quiz-letter">A</span>3</div>
+          <div class="quiz-opt" onclick="answer('q4',this,true)"><span class="quiz-letter">B</span>2</div>
+          <div class="quiz-opt" onclick="answer('q4',this,false)"><span class="quiz-letter">C</span>3.4</div>
+          <div class="quiz-opt" onclick="answer('q4',this,false)"><span class="quiz-letter">D</span>12</div>
+        </div>
+        <div class="quiz-feedback" id="q4-fb"></div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q5</span>
+        <span class="task-title">Which converts the string <code>"42"</code> to an integer?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q5">
+          <div class="quiz-opt" onclick="answer('q5',this,false)"><span class="quiz-letter">A</span><code>str("42")</code></div>
+          <div class="quiz-opt" onclick="answer('q5',this,false)"><span class="quiz-letter">B</span><code>float("42")</code></div>
+          <div class="quiz-opt" onclick="answer('q5',this,true)"><span class="quiz-letter">C</span><code>int("42")</code></div>
+          <div class="quiz-opt" onclick="answer('q5',this,false)"><span class="quiz-letter">D</span><code>bool("42")</code></div>
+        </div>
+        <div class="quiz-feedback" id="q5-fb"></div>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q6</span>
+        <span class="task-title">What does <code>"hello".upper()</code> return?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q6">
+          <div class="quiz-opt" onclick="answer('q6',this,false)"><span class="quiz-letter">A</span><code>"Hello"</code></div>
+          <div class="quiz-opt" onclick="answer('q6',this,true)"><span class="quiz-letter">B</span><code>"HELLO"</code></div>
+          <div class="quiz-opt" onclick="answer('q6',this,false)"><span class="quiz-letter">C</span><code>5</code></div>
+          <div class="quiz-opt" onclick="answer('q6',this,false)"><span class="quiz-letter">D</span><code>True</code></div>
+        </div>
+        <div class="quiz-feedback" id="q6-fb"></div>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="task-card quiz-q">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.2)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">Q7</span>
+        <span class="task-title">What does <code>f"My score is {score}"</code> do?</span>
+      </div>
+      <div class="task-body">
+        <div class="quiz-options" id="q7">
+          <div class="quiz-opt" onclick="answer('q7',this,false)"><span class="quiz-letter">A</span>Creates a variable called score</div>
+          <div class="quiz-opt" onclick="answer('q7',this,false)"><span class="quiz-letter">B</span>Prints the letter f followed by the word score</div>
+          <div class="quiz-opt" onclick="answer('q7',this,true)"><span class="quiz-letter">C</span>Builds a string with the value of score inserted</div>
+          <div class="quiz-opt" onclick="answer('q7',this,false)"><span class="quiz-letter">D</span>Asks for a variable named score</div>
+        </div>
+        <div class="quiz-feedback" id="q7-fb"></div>
+      </div>
+    </div>
+
+    <!-- Score card -->
+    <div class="task-card" id="finalScore" style="display:none;border-color:#fbbf24">
+      <div class="task-header" style="border-bottom-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.06)">
+        <span class="task-num" style="border-color:#fbbf24;color:#fbbf24">★</span>
+        <span class="task-title">Quiz Complete!</span>
+      </div>
+      <div class="task-body" style="text-align:center;padding:2rem">
+        <div style="font-size:3.5rem;font-weight:800;color:#fbbf24;letter-spacing:-0.02em" id="scoreDisplay">–</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem;letter-spacing:0.05em">SCORE</div>
+        <div style="font-size:1.1rem;color:var(--text-dim);margin-top:1rem" id="scoreMsg"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<script>
+  // ===== TAB SWITCHING =====
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelector(`[data-section="${id}"]`).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ===== COPY CODE =====
+  function copyCode(btn) {
+    const block = btn.parentElement;
+    const text = block.innerText.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Done';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    });
+  }
+
+  // ===== FILL IN BLANKS =====
+  function checkFillBlanks() {
+    const answers = [
+      { id: 'fb1', correct: '10' },
+      { id: 'fb2', correct: '"Player One"' },
+      { id: 'fb3', correct: 'print' }
+    ];
+    let score = 0;
+    answers.forEach(a => {
+      const el = document.getElementById(a.id);
+      const val = el.value.trim();
+      if (val.toLowerCase() === a.correct.toLowerCase()) {
+        score++;
+        el.style.borderBottomColor = 'var(--accent4)';
+        el.style.color = 'var(--accent4)';
+      } else {
+        el.style.borderBottomColor = '#ef4444';
+        el.style.color = '#ef4444';
+      }
+    });
+    const res = document.getElementById('fillResult');
+    res.style.display = 'block';
+    if (score === 3) {
+      res.textContent = '✓ All correct! Well done.';
+      res.style.borderColor = 'var(--accent4)';
+      res.style.color = 'var(--accent4)';
+      res.style.background = 'rgba(52,211,153,0.07)';
+    } else {
+      res.textContent = `${score}/3 correct. Hint: check the data type you need and the function name.`;
+      res.style.borderColor = '#ef4444';
+      res.style.color = '#ef4444';
+      res.style.background = 'rgba(239,68,68,0.07)';
+    }
+  }
+
+  // ===== QUIZ =====
+  let quizAnswered = {};
+  const feedbackTexts = {
+    q1: { correct: "✓ Correct! print() displays output to the screen.", wrong: "✗ Not quite. print() outputs text to the screen — it doesn't store or ask for input." },
+    q2: { correct: "✓ Correct! Whole numbers without decimals are integers (int).", wrong: "✗ Not quite. 95 is a whole number, so it's an int." },
+    q3: { correct: "✓ Correct! input() always returns a string — even if the user types a number.", wrong: "✗ Not quite. input() always returns a string, regardless of what the user types." },
+    q4: { correct: "✓ Correct! 17 ÷ 5 = 3 remainder 2. The % (modulo) operator gives the remainder.", wrong: "✗ Not quite. 17 ÷ 5 = 3 with remainder 2. Modulo (%) gives the remainder." },
+    q5: { correct: "✓ Correct! int() converts a string to a whole number integer.", wrong: "✗ Not quite. int() is the function that converts to an integer." },
+    q6: { correct: "✓ Correct! .upper() converts all characters to uppercase.", wrong: "✗ Not quite. .upper() returns 'HELLO' — all capitals." },
+    q7: { correct: "✓ Correct! f-strings embed variable values directly into a string.", wrong: "✗ Not quite. An f-string inserts the value of score into the string at the {score} position." }
+  };
+
+  function answer(qId, el, isCorrect) {
+    if (quizAnswered[qId]) return;
+    quizAnswered[qId] = true;
+
+    const opts = document.querySelectorAll(`#${qId} .quiz-opt`);
+    opts.forEach(o => {
+      o.style.pointerEvents = 'none';
+      o.style.opacity = '0.5';
+    });
+    el.style.opacity = '1';
+    el.classList.add(isCorrect ? 'correct' : 'wrong');
+
+    const fb = document.getElementById(`${qId}-fb`);
+    const data = feedbackTexts[qId];
+    fb.textContent = isCorrect ? data.correct : data.wrong;
+    fb.style.display = 'block';
+    fb.style.color = isCorrect ? 'var(--accent4)' : '#ef4444';
+    fb.style.borderColor = isCorrect ? 'rgba(52,211,153,0.3)' : 'rgba(239,68,68,0.3)';
+    fb.style.background = isCorrect ? 'rgba(52,211,153,0.06)' : 'rgba(239,68,68,0.06)';
+
+    const answered = Object.keys(quizAnswered).length;
+    document.getElementById('quizCount').textContent = `${answered} / 7 answered`;
+    document.getElementById('quizProgress').style.width = `${(answered / 7) * 100}%`;
+
+    if (answered === 7) {
+      const correct = Object.keys(quizAnswered).filter(k => {
+        const opts = document.querySelectorAll(`#${k} .quiz-opt`);
+        for (const o of opts) if (o.classList.contains('correct')) return true;
+        return false;
+      }).length;
+      showFinalScore(correct);
+    }
+  }
+
+  function showFinalScore(score) {
+    const el = document.getElementById('finalScore');
+    el.style.display = 'block';
+    document.getElementById('scoreDisplay').textContent = `${score} / 7`;
+    const msgs = [
+      "Keep practising — review the core tasks and try again!",
+      "Good effort! Review the sections you found tricky.",
+      "Solid understanding — you're getting there!",
+      "Great work! You've grasped today's key concepts.",
+      "Outstanding! You're ready to move on to conditionals! 🚀"
+    ];
+    document.getElementById('scoreMsg').textContent = msgs[Math.min(Math.floor(score / 1.75), 4)];
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+  }
+</script>
+
+</body>
+</html>
